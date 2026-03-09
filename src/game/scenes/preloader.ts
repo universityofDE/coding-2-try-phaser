@@ -26,9 +26,10 @@ export class Preloader extends Scene {
 
         // Game assets
         this.load.image("sky", "sky.png");
-        this.load.image("ground", "platforms.png");
+        this.load.image("ground", "platform.png");
         this.load.image("star2", "star.png");
         this.load.image("bomb", "bomb.png");
+        this.load.image("logo", "logo.png");
 
         // Player sprite sheet
         this.load.spritesheet("dude", "dude.png", {
