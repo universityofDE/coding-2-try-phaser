@@ -98,13 +98,15 @@ export class Level1 extends Scene {
 
         if (this.cursors.left.isDown) {
             this.player.setVelocityX(-160);
+            this.player.setFlipX(false);
             this.player.anims.play("left", true);
         } else if (this.cursors.right.isDown) {
             this.player.setVelocityX(160);
-            this.player.anims.play("right", true);
+            this.player.setFlipX(true);
+            this.player.anims.play("left", true);
         } else {
             this.player.setVelocityX(0);
-            this.player.anims.play("turn");
+            this.player.anims.play("turn", true);
         }
 
         if (this.cursors.up.isDown && this.player.body?.touching.down) {
