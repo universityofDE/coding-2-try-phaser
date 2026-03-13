@@ -44,7 +44,7 @@ export class Level1 extends Scene {
         this.platforms.create(50, 250, "ground");
         this.platforms.create(750, 220, "ground");
 
-        this.player = this.physics.add.sprite(100, 450, "dude");
+        this.player = this.physics.add.sprite(100, 450, "dude", 4);
         this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
 
@@ -89,26 +89,63 @@ export class Level1 extends Scene {
             this,
         );
     }
-
+    frameTimer: number = 0;
+    frameIndex: number = 1;
+    hasMoved: boolean = false;
+    lastDirection: "left" | "right" | null = null;
     update() {
         if (this.gameOver) {
             this.changeScene();
             return;
         }
 
+        this.frameTimer++;
+
+        // 左移动
         if (this.cursors.left.isDown) {
+            this.lastDirection = "left";
             this.player.setVelocityX(-160);
-            this.player.setFlipX(false);
-            this.player.anims.play("left", true);
-        } else if (this.cursors.right.isDown) {
-            this.player.setVelocityX(160);
-            this.player.setFlipX(true);
-            this.player.anims.play("left", true);
-        } else {
-            this.player.setVelocityX(0);
-            this.player.anims.play("turn", true);
+
+            if (this.frameTimer % 10 === 0) {
+                this.frameIndex++;
+                if (this.frameIndex > 3) {
+                    this.frameIndex = 1;
+                }
+                this.player.setFrame(this.frameIndex);
+            }
         }
 
+        // 右移动
+        else if (this.cursors.right.isDown) {
+            this.lastDirection = "right";
+            this.player.setVelocityX(160);
+
+            if (this.frameTimer % 10 === 0) {
+                this.frameIndex++;
+                if (this.frameIndex < 6 || this.frameIndex > 8) {
+                    this.frameIndex = 6;
+                }
+                if (this.frameIndex > 8) {
+                    this.frameIndex = 6;
+                }
+                this.player.setFrame(this.frameIndex);
+            }
+        }
+
+        // 停止
+        else {
+            this.player.setVelocityX(0);
+
+            if (this.lastDirection === "left") {
+                this.player.setFrame(0);
+            } else if (this.lastDirection === "right") {
+                this.player.setFrame(5);
+            } else {
+                this.player.setFrame(4); // 初始状态
+            }
+        }
+
+        // 跳跃
         if (this.cursors.up.isDown && this.player.body?.touching.down) {
             this.player.setVelocityY(-330);
         }
